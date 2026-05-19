@@ -1,0 +1,25 @@
+#pragma kernel PaintSplat
+
+RWTexture2D<float> _DamageMap; // RW = read AND write in the same pass, no ping-pong needed
+
+float2 _ImpactUV;
+float _ImpactRadius;
+int _Resolution;
+
+[numthreads(8, 8, 1)]
+void PaintSplat(uint3 id : SV_DispatchThreadID)
+{
+    // id.xy is the texel coordinate (0,0) is top-left in compute, but it doesn't matter
+    // because we convert to UV space immediately and work entirely there
+    float2 texelUV = (id.xy + 0.5) / (float) _Resolution;
+
+    // Read current damage value directly from the texel
+    float existing = _DamageMap[id.xy];
+
+    // Distance from this texel to the impact center both in UV space, no convention issues
+    float dist = length(texelUV - _ImpactUV);
+    float splat = saturate(1.0 - smoothstep(0.0, _ImpactRadius, dist));
+
+    // Write back � additive accumulation, clamped to 1
+    _DamageMap[id.xy] = saturate(existing + splat); 
+}
