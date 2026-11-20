@@ -1,1 +1,1 @@
-If you are not Kaya, well, welcome stranger, but no readme for you since it's meant to only make sense for Kaya
+Not Kaya? Welcome, stranger! Unfortunately, this README wasn't written for you, doesn't care about you, and will make absolutely no sense. Have a nice day!
